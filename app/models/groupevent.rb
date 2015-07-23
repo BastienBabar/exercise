@@ -1,10 +1,6 @@
 class Groupevent < ActiveRecord::Base
+  #attr_accessor :status #, :startdate, :enddate, :name, :description, :location
 
-  validates :startdate, :enddate, :name, :description, :location, presence: :true, if: :status_is_publish?
-  validates :status, inclusion: { in: %w(-1 0 1) }, presence: :true
-#numericality: { only_integer: true, less_than_or_equal_to: 1, greater_than_or_equal_to: -1 },
-  private
-  def status_is_publish
-    status == 1
-  end
+  validates :status, inclusion: { in: [-1, 0, 1] }, presence: :true
+  validates_presence_of :startdate, :enddate, :name, :description, :location, :if => lambda {|s| s.status == 1 }
 end
