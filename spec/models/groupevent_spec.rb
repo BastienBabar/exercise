@@ -3,18 +3,13 @@ require 'rails_helper'
 RSpec.describe Groupevent, type: :model do
   context 'empty params' do
     it { should validate_presence_of(:status) }
+    it { should validate_presence_of(:name) }
     it { should validate_inclusion_of(:status).in_array([-1, 0, 1]) }
-    it { should_not validate_presence_of(:name) }
-  end
-
-  context 'draft event' do
-    it { should validate_presence_of(:status) }
-    it { should validate_inclusion_of(:status).in_array([-1, 0, 1]) }
-    it { should_not validate_presence_of(:name) }
+    it { should_not validate_presence_of(:description) }
   end
 
   context 'publish invalid event' do
-    event = Groupevent.create(status: 1)
+    event = Groupevent.create(status: 1, name: 'test')
     event.valid?
     it { expect(event).to be_invalid }
   end
@@ -30,5 +25,4 @@ RSpec.describe Groupevent, type: :model do
     event.valid?
     it { expect(event).to be_valid }
   end
-
 end

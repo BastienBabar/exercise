@@ -1,6 +1,5 @@
 class ApplicationController < ActionController::Base
   before_filter :parse_request
-  before_filter :find_groupevent, only: [:show, :update, :destroy]
 
   before_filter only: :create do
     unless @json.has_key?('groupevent') && @json['groupevent']['name']
@@ -17,6 +16,8 @@ class ApplicationController < ActionController::Base
   before_filter only: :create do
     @groupevent = Groupevent.find_by_name(@json['groupevent']['name'])
   end
+
+  before_filter :find_groupevent, only: [:show, :update, :destroy]
 
   def show
     render json: @groupevent, :except => [:id, :created_at, :updated_at]
@@ -67,11 +68,13 @@ class ApplicationController < ActionController::Base
 
   def parse_request
     @json = JSON.parse(request.body.read)
-    @name = @json['groupevent']['name']
-    @startdate = @json['groupevent']['startdate']
-    @enddate = @json['groupevent']['enddate']
-    @description = @json['groupevent']['description']
-    @location = @json['groupevent']['location']
-    @status = @json['groupevent']['status']
+    if @json.has_key?('groupevent')
+      @name = @json['groupevent']['name']
+      @startdate = @json['groupevent']['startdate']
+      @enddate = @json['groupevent']['enddate']
+      @description = @json['groupevent']['description']
+      @location = @json['groupevent']['location']
+      @status = @json['groupevent']['status']
+    end
   end
 end
